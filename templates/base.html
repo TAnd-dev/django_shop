@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>{% block title %}Магазин электроники{% endblock %}</title>
+</head>
+<body style="background-color: #f2f2f2">
+{% block header %}
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger mb-0" role="alert">
+    {{ message }}
+</div>
+{% else %}
+<div class="mb-0 alert alert-{{ message.tags }}" role="alert">
+    {{ message }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+<nav class="navbar bg-dark mb-3" style="min-width: 1050px;">
+    <div class="container justify-content-center">
+        <a href="#" class="navbar-brand text-light">AME</a>
+        <form class="d-flex my-auto me-4" role="search">
+            <input class="form-control me-2 px-5" type="search" placeholder="Поиск" aria-label="Search">
+            <button class="btn btn-success" type="submit">Поиск</button>
+        </form>
+        {% if request.user.is_authenticated %}
+        <div class="nav-item dropdown">
+            <button class="nav-link dropdown-toggle btn text-light py-2 px-4" data-bs-toggle="dropdown">
+                {{ request.user }}
+            </button>
+            <ul class="dropdown-menu mt-1 text-dark ">
+                <li class="dropdown-item">
+                    <a href="#" class="nav-link">Профиль</a>
+                </li>
+                <li class="dropdown-item">
+                    <a href="#" class="nav-link me-3">Избранное</a>
+                </li>
+                <li class="dropdown-item">
+                    <a href="#" class="nav-link me-3">Корзина</a>
+                </li>
+                <li class="dropdown-item">
+                    <a href="#" class="nav-link me-3">Выйти</a>
+                </li>
+            </ul>
+        </div>
+        {% else %}
+        <a href="{% url 'signin' %}?next={{request.path}}" class="nav-link text-light">Войти</a>
+        <a href="{% url 'signup' %}?next={{request.path}}" class="nav-link text-light ms-3">Регистрация</a>
+        {% endif %}
+    </div>
+    </div>
+</nav>
+{% endblock %}
+{% block content %}{% endblock %}
+</body>
+</html>
