@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" xmlns="http://www.w3.org/1999/html">
+    <div class="row">
+        <div class="col-3">
+            <form method="get" class="form-control">
+                {% csrf_token %}
+                <button class="btn btn-primary my-2">Показать</button>
+            </form>
+        </div>
+        <div class="col-9">
+            {% for product in products %}
+            <div class="card mb-3 mx-auto" style="max-width: 1000px;">
+                <div class="row g-0">
+                    <div class="col-md-3" style="max-height: 200px;">
+                        <img src="{{ product.image.first.image.url }}" class="img-fluid rounded-start h-100"
+                             alt="Фото">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a class="text-decoration-none" href="{{ product.get_absolute_url }}">
+                                    {{ product.title }}</a></h5>
+                            <p class="card-text">{{ product.description|truncatewords_html:20|safe }}</p>
+                            <p class="card-text">Оценка: 0
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-center">
+                        <h5 class="mt-3">{{ product.price }} Р</h5>
+                        <a href="#" class="btn btn-outline-primary"
+                           style="min-width: 90px;">Купить</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
