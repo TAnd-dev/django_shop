@@ -57,6 +57,15 @@ class ShopCategory(BaseShop):
         return items.filter(category__slug=self.kwargs['slug']).all()
 
 
+class ShopSearch(BaseShop):
+    def get_queryset(self):
+        search = self.request.GET.get('s')
+        items = super().get_queryset()
+        if search:
+            items = items.filter(title__icontains=search).all()
+        return items
+
+
 class ItemDetail(DetailView, CreateView):
     model = Item
     template_name = 'shop/product_detail.html'

@@ -27,8 +27,8 @@
         <div class="container justify-content-center">
             <a href="{% url 'product_list' %}" class="navbar-brand text-light">AME</a>
             {% show_categories %}
-            <form class="d-flex my-auto me-4" role="search">
-                <input class="form-control me-2 px-5" type="search" placeholder="Поиск" aria-label="Search">
+            <form method="get" action="{% url 'search' %}" class="d-flex my-auto me-4" role="search">
+                <input class="form-control me-2 px-5" name="s" type="search" placeholder="Поиск" aria-label="Search">
                 <button class="btn btn-success" type="submit">Поиск</button>
             </form>
             {% if request.user.is_authenticated %}
