@@ -28,7 +28,12 @@
                                         <a class="text-decoration-none" href="{{ product.get_absolute_url }}">
                                             {{ product.title }}</a></h5>
                                     <p class="card-text">{{ product.description|truncatewords_html:20|safe }}</p>
-                                    <p class="card-text">Оценка: 0
+                                    <p class="card-text">
+                                        {% if product.get_avg_rate %}
+                                            Оценка: {{ product.get_avg_rate }}
+                                        {% else %}
+                                            Нет оценок
+                                        {% endif %}
                                     </p>
                                 </div>
                             </div>

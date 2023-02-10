@@ -31,7 +31,12 @@
                         <a class="text-decoration-none" href="{{ product.get_absolute_url }}">
                             {{ product.title }}</a></h5>
                     <p class="card-text">{{ product.description }}</p>
-                    <p class="card-text">Оценка: 0</p>
+                    <p class="card-text">
+                        {% if product.get_avg_rate %}
+                            Оценка: {{ product.get_avg_rate }}
+                        {% else %}
+                            Нет оценок
+                        {% endif %}</p>
                 </div>
             </div>
             <div class="col-xl-1 text-center">
@@ -43,18 +48,23 @@
     <div class="card mb-3 mx-auto" style="max-width: 1300px;">
         <div class="row g-0 ps-3 pt-3">
             <div class="row mb-3">
-                <div class="col-6">
-                    <span class="h4">Последний отзыв</span>
-                </div>
-                <div class="text-end col-6">
-                    <span class="fw-bold">Автор: </span>{{ review.author }} <span class="fw-bold ms-4">Оценка: </span>
-                    {{ review.rate }}
+                <div class="col-12">
+                    <span class="h4">Отзывы</span>
+                    <hr/>
                 </div>
             </div>
-            <p><span class="fw-bold">Комментарий: </span>{{ review.text }}</p>
+            {% for review in product.review.all %}
+            <p>
+                <span class="fw-bold">Автор: </span>{{ review.author }}
+            </p>
+            <p>
+                <span class="fw-bold">Оценка: </span>{{ review.rate }}
+            </p>
+            <p>
+                <span class="fw-bold">Комментарий: </span>{{ review.text }}
+            </p>
+            <hr/>
+            {% endfor %}
         </div>
-    </div>
-    <div class="container">
-        <a href="#">Все отзывы</a>
     </div>
 {% endblock %}

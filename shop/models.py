@@ -1,4 +1,5 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
 from django.urls import reverse
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 
@@ -74,6 +75,9 @@ class Item(models.Model):
 
     def get_absolute_url(self):
         return reverse('item_detail', kwargs={'pk': self.pk})
+
+    def get_avg_rate(self):
+        return Review.objects.filter(product=self).aggregate(Avg('rate'))['rate__avg']
 
 
 class ProductGallery(models.Model):
