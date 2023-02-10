@@ -130,3 +130,21 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.product}'
+
+
+class Favorite(models.Model):
+    item = models.ForeignKey(
+        Item,
+        related_name='favorite',
+        verbose_name='Item',
+        on_delete=models.CASCADE
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='favorite',
+        verbose_name='User',
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f'{self.item}'

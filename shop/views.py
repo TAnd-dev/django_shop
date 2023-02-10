@@ -1,10 +1,11 @@
 from django.contrib import messages
 from django.db.models import Count, Avg
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView, DetailView, FormView, CreateView
 
 from shop.forms import FilterProducts, ReviewForm
-from shop.models import Item
+from shop.models import Item, Favorite
+from users.models import CustomUser
 
 
 class BaseShop(ListView, FormView):
@@ -66,6 +67,12 @@ class ShopSearch(BaseShop):
         return items
 
 
+class ShopFavorite(BaseShop):
+    def get_queryset(self):
+        items = super().get_queryset()
+        return items.filter(favorite__user=self.request.user.pk).all()
+
+
 class ItemDetail(DetailView, CreateView):
     model = Item
     template_name = 'shop/product_detail.html'
@@ -82,3 +89,26 @@ class ItemDetail(DetailView, CreateView):
         review.product_id = self.get_object().id
         review.save()
         return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
+
+
+def add_favorite(request):
+    if request.method == 'POST':
+        item = Item.objects.get(pk=request.POST.get('item'))
+        user = CustomUser.objects.get(pk=request.user.pk)
+        Favorite.objects.create(user=user, item=item)
+        return JsonResponse({'success': True})
+
+
+def delete_favorite(request):
+    if request.method == 'POST':
+        item = Item.objects.get(pk=request.POST.get('item'))
+        user = CustomUser.objects.get(pk=request.user.pk)
+        Favorite.objects.get(user=user, item=item).delete()
+        return JsonResponse({'success': True})
+
+
+def check_favorite(request, item_pk):
+    if request.method == 'GET':
+        user_id = request.user.pk
+        is_favorite = bool(Favorite.objects.filter(user__pk=user_id, item__id=item_pk))
+        return JsonResponse({'is_favorite': is_favorite})
