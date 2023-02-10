@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3 class="ms-5">Профиль</h3>
+    <div class="card mb-3 mx-5">
+        <div class="row p-3">
+            <div class="col-4">
+                <p><span class="h5">email: </span>{{ profile.user.email }}</p>
+                <p><span class="h5">Номер телефона: </span>{% if profile.phone %} {{ profile.phone }}
+                {% else %} Не указан {% endif %}</p>
+            </div>
+            <div class="col-4">
+                <p><span class="h5">Имя: </span>{% if profile.first_name %} {{ profile.first_name }}
+                {% else %} Не указан {% endif %}</p>
+                <p><span class="h5">Фамилия: </span>{% if profile.second_name %} {{ profile.second_name }}
+                {% else %} Не указан {% endif %}</p>
+            </div>
+            <div class="col-4">
+                <p><span class="h5">Страна: </span>{% if profile.country %} {{ profile.country }}
+                {% else %} Не указан {% endif %}</p>
+                <p><span class="h5">Город: </span>{% if profile.city %} {{ profile.city }}
+                {% else %} Не указан {% endif %}</p>
+                <p><span class="h5">Улица: </span>{% if profile.street %} {{ profile.street }}
+                {% else %} Не указан {% endif %}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mx-5 row p-3">
+        <div class="col-auto">
+            <a class="btn btn-warning" href="{% url 'change_email' %}">Изменить email</a>
+        </div>
+        <div class="col-auto">
+            <a class="btn btn-primary" href="{% url 'change_user_data' %}">Изменить данные о себе</a>
+        </div>
+    </div>
+{% endblock %}

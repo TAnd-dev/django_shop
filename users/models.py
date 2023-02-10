@@ -42,6 +42,12 @@ class UserProfile(models.Model):
         null=True,
         blank=True
     )
+    country = models.CharField(
+        max_length=64,
+        verbose_name='Country',
+        null=True,
+        blank=True
+    )
     city = models.CharField(
         max_length=24,
         verbose_name='City',
@@ -54,7 +60,7 @@ class UserProfile(models.Model):
         null=True,
         blank=True
     )
-    phone = models.IntegerField(
+    phone = models.BigIntegerField(
         verbose_name='Phone',
         null=True,
         blank=True
