@@ -31,7 +31,7 @@
                         <a class="text-decoration-none" href="{{ product.get_absolute_url }}">
                             {{ product.title }}</a></h5>
                     <p class="card-text">{{ product.description }}</p>
-                    <p class="card-text">
+                    <p class="card-text h5">
                         {% if product.get_avg_rate %}
                             Оценка: {{ product.get_avg_rate }}
                         {% else %}
@@ -46,6 +46,35 @@
         </div>
     </div>
     <div class="card mb-3 mx-auto" style="max-width: 1300px;">
+        {% if request.user.is_authenticated %}
+            <div class="row mb-3 ps-3 pt-3">
+                <span class="h4">Написать отзыв</span>
+            </div>
+            <form method="post" class="p-3">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="mt-3 col-2 h6">Оценка</div>
+                    <div class="mt-2 mb-3 col-auto">
+                        {{ form.rate }}
+                    </div>
+                    <div class="mt-3 col-2">От 0 до 100</div>
+                </div>
+
+                <div class="row">
+                    <div class="mt-3 col-2 h6">Комментарий</div>
+                    <div class="mt-2 mb-3 col-10">
+                        {{ form.text }}
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary ms-3"/>
+            </form>
+        {% else %}
+            <div class="row mb-3 ps-3 pt-3">
+                <span class="h4">Необходимо <a href="{% url 'signin' %}?next={{ request.path }}">войти</a>, чтобы написать отзыв</span>
+            </div>
+        {% endif %}
+    </div>
+    <div class="card mb-3 mx-auto" style="max-width: 1300px;">
         <div class="row g-0 ps-3 pt-3">
             <div class="row mb-3">
                 <div class="col-12">
@@ -54,16 +83,16 @@
                 </div>
             </div>
             {% for review in product.review.all %}
-            <p>
-                <span class="fw-bold">Автор: </span>{{ review.author }}
-            </p>
-            <p>
-                <span class="fw-bold">Оценка: </span>{{ review.rate }}
-            </p>
-            <p>
-                <span class="fw-bold">Комментарий: </span>{{ review.text }}
-            </p>
-            <hr/>
+                <p>
+                    <span class="fw-bold">Автор: </span>{{ review.author }}
+                </p>
+                <p>
+                    <span class="fw-bold">Оценка: </span>{{ review.rate }}
+                </p>
+                <p>
+                    <span class="fw-bold">Комментарий: </span>{{ review.text }}
+                </p>
+                <hr/>
             {% endfor %}
         </div>
     </div>

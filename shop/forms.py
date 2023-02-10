@@ -1,5 +1,7 @@
 from django import forms
 
+from shop.models import Review
+
 SORT = [
     ('1', 'Сначала недорогие'),
     ('2', 'Сначала дорогие'),
@@ -26,3 +28,13 @@ class FilterProducts(forms.Form):
         required=False,
         choices=SORT
     )
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ('rate', 'text')
+        widgets = {
+            'rate': forms.NumberInput(attrs={'class': 'form-control'}),
+            'text': forms.Textarea(attrs={'class': 'form-control'})
+        }

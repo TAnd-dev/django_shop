@@ -1,7 +1,9 @@
+from django.contrib import messages
 from django.db.models import Count, Avg
-from django.views.generic import ListView, DetailView, FormView
+from django.http import HttpResponseRedirect
+from django.views.generic import ListView, DetailView, FormView, CreateView
 
-from shop.forms import FilterProducts
+from shop.forms import FilterProducts, ReviewForm
 from shop.models import Item
 
 
@@ -55,7 +57,19 @@ class ShopCategory(BaseShop):
         return items.filter(category__slug=self.kwargs['slug']).all()
 
 
-class ItemDetail(DetailView):
+class ItemDetail(DetailView, CreateView):
     model = Item
     template_name = 'shop/product_detail.html'
     context_object_name = 'product'
+    form_class = ReviewForm
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Ошибка при добавлении комментария')
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+        review.author_id = self.request.user.id
+        review.product_id = self.get_object().id
+        review.save()
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
