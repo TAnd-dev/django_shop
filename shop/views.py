@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count, Avg
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import ListView, DetailView, FormView, CreateView
@@ -67,7 +69,7 @@ class ShopSearch(BaseShop):
         return items
 
 
-class ShopFavorite(BaseShop):
+class ShopFavorite(LoginRequiredMixin, BaseShop):
     def get_queryset(self):
         items = super().get_queryset()
         return items.filter(favorite__user=self.request.user.pk).all()
@@ -91,6 +93,7 @@ class ItemDetail(DetailView, CreateView):
         return HttpResponseRedirect(self.request.META.get('HTTP_REFERER', '/'))
 
 
+@login_required
 def add_favorite(request):
     if request.method == 'POST':
         item = Item.objects.get(pk=request.POST.get('item'))
@@ -99,6 +102,7 @@ def add_favorite(request):
         return JsonResponse({'success': True})
 
 
+@login_required
 def delete_favorite(request):
     if request.method == 'POST':
         item = Item.objects.get(pk=request.POST.get('item'))
@@ -107,6 +111,7 @@ def delete_favorite(request):
         return JsonResponse({'success': True})
 
 
+@login_required
 def check_favorite(request, item_pk):
     if request.method == 'GET':
         user_id = request.user.pk
