@@ -1,12 +1,12 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models import Avg
-from django.urls import reverse
+from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 
-from django_shop import settings
-
-from mptt.models import MPTTModel
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
 from django.db import models
+from django.urls import reverse
+
+from django_shop import settings
 
 
 class Category(MPTTModel):
@@ -148,3 +148,62 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f'{self.item}'
+
+
+class Purchase(models.Model):
+    item = models.ManyToManyField(
+        Item,
+        related_name='purchase',
+        verbose_name='Item',
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        default=None,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL
+    )
+    is_delivery = models.BooleanField(
+        verbose_name='Is Delivery',
+    )
+    total_price = models.DecimalField(
+        verbose_name='Total price',
+        max_digits=12,
+        decimal_places=2
+    )
+    created_at = models.DateTimeField(
+        verbose_name='Created at',
+        auto_now_add=True,
+    )
+    email = models.EmailField(
+        verbose_name='Email',
+    )
+    phone = models.BigIntegerField(
+        verbose_name='Phone',
+        null=True,
+        blank=True
+    )
+    country = models.CharField(
+        max_length=64,
+        verbose_name='Country',
+        null=True,
+        blank=True
+    )
+    city = models.CharField(
+        max_length=24,
+        verbose_name='City',
+        null=True,
+        blank=True
+    )
+    street = models.CharField(
+        max_length=128,
+        verbose_name='Street',
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ('created_at',)
+
+    def __str__(self):
+        return f'{self.email}'

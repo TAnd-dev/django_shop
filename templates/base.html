@@ -45,7 +45,7 @@
                             <a href="{% url 'favorite' %}" class="nav-link me-3">Избранное</a>
                         </li>
                         <li class="dropdown-item">
-                            <a href="#" class="nav-link me-3">Корзина</a>
+                            <a href="{% url 'basket' %}" class="nav-link me-3">Корзина</a>
                         </li>
                         <li class="dropdown-item">
                             <a href="{% url 'logout' %}?next={{ requests.path }}" class="nav-link me-3">Выйти</a>
@@ -61,5 +61,6 @@
     </nav>
 {% endblock %}
 {% block content %}{% endblock %}
+
 </body>
 </html>

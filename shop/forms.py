@@ -1,6 +1,6 @@
 from django import forms
 
-from shop.models import Review
+from shop.models import Review, Purchase
 
 SORT = [
     ('1', 'Сначала недорогие'),
@@ -37,4 +37,19 @@ class ReviewForm(forms.ModelForm):
         widgets = {
             'rate': forms.NumberInput(attrs={'class': 'form-control'}),
             'text': forms.Textarea(attrs={'class': 'form-control'})
+        }
+
+
+class PurchaseForm(forms.ModelForm):
+    class Meta:
+        model = Purchase
+        fields = ('is_delivery', 'email', 'phone', 'country', 'city', 'street')
+        widgets = {
+            'is_delivery': forms.CheckboxInput(attrs={'class': 'form-check-input',
+                                                      'checked': True}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'phone': forms.NumberInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'street': forms.TextInput(attrs={'class': 'form-control'}),
         }

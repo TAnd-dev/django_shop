@@ -1,11 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum
 from django.http import HttpResponseRedirect, JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, FormView, CreateView
 
-from shop.forms import FilterProducts, ReviewForm
+from shop.forms import FilterProducts, ReviewForm, PurchaseForm
 from shop.models import Item, Favorite
 from users.models import CustomUser
 
@@ -75,6 +76,37 @@ class ShopFavorite(LoginRequiredMixin, BaseShop):
         return items.filter(favorite__user=self.request.user.pk).all()
 
 
+class UserBasket(CreateView, ListView):
+    model = Item
+    template_name = 'shop/basket.html'
+    context_object_name = 'products'
+    allow_empty = True
+
+    form_class = PurchaseForm
+    success_url = reverse_lazy('basket')
+
+    def get_queryset(self):
+        basket = self.request.session.get('basket', [])
+        return Item.objects.filter(pk__in=basket).all()
+
+    def form_valid(self, form):
+        purchase = form.save(commit=False)
+
+        products = self.get_queryset()
+        total_price = products.aggregate(Sum('price')).get('price__sum')
+        user = self.request.user
+        user = user if user.pk else None
+
+        purchase.total_price = total_price
+        purchase.user = user
+        purchase = form.save()
+        purchase.item.add(*products)
+
+        messages.success(self.request, 'Ваш заказ успешно оформлен!')
+        self.request.session.clear()
+        return super().form_valid(form)
+
+
 class ItemDetail(DetailView, CreateView):
     model = Item
     template_name = 'shop/product_detail.html'
@@ -111,9 +143,47 @@ def delete_favorite(request):
         return JsonResponse({'success': True})
 
 
-@login_required
 def check_favorite(request, item_pk):
     if request.method == 'GET':
         user_id = request.user.pk
         is_favorite = bool(Favorite.objects.filter(user__pk=user_id, item__id=item_pk))
         return JsonResponse({'is_favorite': is_favorite})
+
+
+def add_to_basket(request, item_id=None):
+    if request.method == 'POST':
+        item_id = int(request.POST.get('item'))
+
+    basket = request.session.get('basket', [])
+
+    if item_id not in basket:
+        basket.append(item_id)
+
+    request.session['basket'] = basket
+    return JsonResponse({'success': True})
+
+
+def delete_from_basket(request):
+    if request.method == 'POST':
+        item_id = int(request.POST.get('item'))
+        basket = request.session.get('basket', [])
+
+        if item_id in basket:
+            basket.remove(item_id)
+
+        request.session['basket'] = basket
+        return JsonResponse({'success': True})
+
+
+def check_basket(request, item_pk):
+    if request.method == 'GET':
+        basket = request.session.get('basket', [])
+        in_basket = bool(item_pk in basket)
+        return JsonResponse({'in_basket': in_basket})
+
+
+def to_basket(request):
+    if request.method == 'POST':
+        item_id = int(request.POST.get('item'))
+        add_to_basket(request, item_id)
+    return reverse_lazy('basket')

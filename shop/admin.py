@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from shop.models import Item, Category, Review, ProductGallery, Favorite
+from shop.models import Item, Category, Review, ProductGallery, Favorite, Purchase
 
 
 class Gallery(admin.TabularInline):
@@ -21,3 +21,4 @@ admin.site.register(Item, ItemAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Review)
 admin.site.register(Favorite)
+admin.site.register(Purchase)
