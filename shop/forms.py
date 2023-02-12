@@ -1,3 +1,6 @@
+"""
+Import required libraries for forms
+"""
 from django import forms
 
 from shop.models import Review, Purchase
@@ -12,6 +15,9 @@ SORT = [
 
 
 class FilterProducts(forms.Form):
+    """
+    Form to filter products based on price and sort
+    """
     min_price = forms.IntegerField(
         label='Минимальная цена',
         required=False,
@@ -31,7 +37,14 @@ class FilterProducts(forms.Form):
 
 
 class ReviewForm(forms.ModelForm):
+    """
+    Form to submit a review for a product
+    """
+
     class Meta:
+        """
+        Class to description of fields
+        """
         model = Review
         fields = ('rate', 'text')
         widgets = {
@@ -41,7 +54,14 @@ class ReviewForm(forms.ModelForm):
 
 
 class PurchaseForm(forms.ModelForm):
+    """
+    Form to purchase an item
+    """
+
     class Meta:
+        """
+        Class to description of fields
+        """
         model = Purchase
         fields = ('is_delivery', 'email', 'phone', 'country', 'city', 'street')
         widgets = {

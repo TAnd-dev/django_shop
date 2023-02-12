@@ -1,3 +1,6 @@
+"""
+Import required libraries for models
+"""
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -6,6 +9,12 @@ from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractUser):
+    """
+    Custom user model that extends Django's built-in `AbstractUser` model.
+
+    This model uses email as the unique identifier for authentication instead of
+    the default `username` field.
+    """
     username = None
     email = models.EmailField(_('email address'), unique=True)
 
@@ -19,6 +28,9 @@ class CustomUser(AbstractUser):
 
 
 class UserProfile(models.Model):
+    """
+    UserProfile model that stores additional information about a user.
+    """
     user = models.OneToOneField(
         CustomUser,
         verbose_name='User Profile',

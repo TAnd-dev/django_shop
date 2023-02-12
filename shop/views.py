@@ -1,3 +1,6 @@
+"""
+The necessary imports for the shop view module
+"""
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,6 +15,9 @@ from users.models import CustomUser
 
 
 class BaseShop(ListView, FormView):
+    """
+    The base view for other list views
+    """
     model = Item
     template_name = 'shop/products.html'
     context_object_name = 'products'
@@ -43,7 +49,8 @@ class BaseShop(ListView, FormView):
         elif sort['sort'] == '2':
             items = items.order_by('-price').all()
         elif sort['sort'] == '3':
-            items = items.annotate(count_purchases=Count('purchase')).order_by('-count_purchases').all()
+            items = items.annotate(count_purchases=Count('purchase')).order_by(
+                '-count_purchases').all()
         elif sort['sort'] == '4':
             items = items.annotate(count_review=Count('review')).order_by('-count_review').all()
         elif sort['sort'] == '5':
@@ -60,16 +67,26 @@ class BaseShop(ListView, FormView):
 
 
 class ProductsList(BaseShop):
-    pass
+    """
+    View displays the entire list of items for sale
+    """
 
 
 class ShopCategory(BaseShop):
+    """
+    View filters the items based on a specific category
+    """
+
     def get_queryset(self):
         items = super().get_queryset()
         return items.filter(category__slug=self.kwargs['slug']).all()
 
 
 class ShopSearch(BaseShop):
+    """
+    View filters the items based on a search term
+    """
+
     def get_queryset(self):
         search = self.request.GET.get('s')
         items = super().get_queryset()
@@ -79,12 +96,19 @@ class ShopSearch(BaseShop):
 
 
 class ShopFavorite(LoginRequiredMixin, BaseShop):
+    """
+    View displays the list of favorite items for the logged-in user
+    """
+
     def get_queryset(self):
         items = super().get_queryset()
         return items.filter(favorite__user=self.request.user.pk).all()
 
 
 class UserBasket(CreateView, ListView):
+    """
+    View displays the items in the user's basket and allows the user to purchase it
+    """
     model = Item
     template_name = 'shop/basket.html'
     context_object_name = 'products'
@@ -116,6 +140,9 @@ class UserBasket(CreateView, ListView):
 
 
 class ItemDetail(DetailView, CreateView):
+    """
+    View for a specific Item instance with adding a review for the item
+    """
     model = Item
     template_name = 'shop/product_detail.html'
     context_object_name = 'product'
@@ -135,6 +162,9 @@ class ItemDetail(DetailView, CreateView):
 
 @login_required
 def add_favorite(request):
+    """
+    Add an Item to the user's favorite list
+    """
     if request.method == 'POST':
         item = Item.objects.get(pk=request.POST.get('item'))
         user = CustomUser.objects.get(pk=request.user.pk)
@@ -144,6 +174,9 @@ def add_favorite(request):
 
 @login_required
 def delete_favorite(request):
+    """
+    Delete an Item from the user's favorite list
+    """
     if request.method == 'POST':
         item = Item.objects.get(pk=request.POST.get('item'))
         user = CustomUser.objects.get(pk=request.user.pk)
@@ -152,6 +185,9 @@ def delete_favorite(request):
 
 
 def check_favorite(request, item_pk):
+    """
+    Check if an Item is in the user's favorite list
+    """
     if request.method == 'GET':
         user_id = request.user.pk
         is_favorite = bool(Favorite.objects.filter(user__pk=user_id, item__id=item_pk))
@@ -159,6 +195,9 @@ def check_favorite(request, item_pk):
 
 
 def add_to_basket(request, item_id=None):
+    """
+    Add an Item to the user's basket (stored in the session)
+    """
     if request.method == 'POST':
         item_id = int(request.POST.get('item'))
 
@@ -172,6 +211,9 @@ def add_to_basket(request, item_id=None):
 
 
 def delete_from_basket(request):
+    """
+    Remove an item from the basket (stored in the session)
+    """
     if request.method == 'POST':
         item_id = int(request.POST.get('item'))
         basket = request.session.get('basket', [])
@@ -184,6 +226,9 @@ def delete_from_basket(request):
 
 
 def check_basket(request, item_pk):
+    """
+    Check if an item is in the basket (stored in the session)
+    """
     if request.method == 'GET':
         basket = request.session.get('basket', [])
         in_basket = bool(item_pk in basket)
@@ -191,6 +236,9 @@ def check_basket(request, item_pk):
 
 
 def to_basket(request):
+    """
+    Add an item to the basket (stored in the session)
+    """
     if request.method == 'POST':
         item_id = int(request.POST.get('item'))
         add_to_basket(request, item_id)

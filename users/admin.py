@@ -1,3 +1,6 @@
+"""
+Import required libraries for admin
+"""
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
@@ -5,6 +8,9 @@ from users.models import CustomUser, UserProfile
 
 
 class CustomUserAdmin(UserAdmin):
+    """
+    Custom user admin for the CustomUser model
+    """
     model = CustomUser
     list_display = ('email', 'is_staff', 'is_active',)
     list_filter = ('email', 'is_staff', 'is_active',)

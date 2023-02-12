@@ -1,3 +1,6 @@
+"""
+Import required libraries for views
+"""
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -12,6 +15,10 @@ from users.models import UserProfile, CustomUser
 
 
 class BaseUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    Base class for views which handles updating the user data.
+    This view requires user authentication.
+    """
     template_name = 'user/change_user_data.html'
     context_object_name = 'user'
 
@@ -25,6 +32,9 @@ class BaseUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class SignUp(CreateView):
+    """
+    View for handling user sign up
+    """
     form_class = UserRegisterForm
     template_name = 'user/auth.html'
 
@@ -36,6 +46,9 @@ class SignUp(CreateView):
 
 
 class SignIn(FormView):
+    """
+    View for handling user sign in
+    """
     form_class = UserLoginForm
     template_name = 'user/auth.html'
 
@@ -53,6 +66,10 @@ class SignIn(FormView):
 
 
 class ProfileView(LoginRequiredMixin, DetailView):
+    """
+    View for displaying user's profile.
+    This view requires user authentication
+    """
     template_name = 'user/profile.html'
     context_object_name = 'profile'
 
@@ -61,6 +78,9 @@ class ProfileView(LoginRequiredMixin, DetailView):
 
 
 class ChangeEmailView(BaseUpdateView):
+    """
+    View for changing the user's email
+    """
     form_class = EmailForm
 
     def get_object(self, queryset=None):
@@ -68,6 +88,9 @@ class ChangeEmailView(BaseUpdateView):
 
 
 class ChangeDataView(BaseUpdateView):
+    """
+    View for changing the user's profile data
+    """
     form_class = ProfileForm
 
     def get_object(self, queryset=None):
@@ -75,6 +98,9 @@ class ChangeDataView(BaseUpdateView):
 
 
 class PurchaseView(LoginRequiredMixin, ListView):
+    """
+    View displays the items in the user's purchases
+    """
     model = Purchase
     template_name = 'user/history_purchases.html'
     context_object_name = 'purchases'
@@ -85,5 +111,8 @@ class PurchaseView(LoginRequiredMixin, ListView):
 
 @login_required
 def logout_view(request):
+    """
+    View function that logs the user out of the current session
+    """
     logout(request)
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

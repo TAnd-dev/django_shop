@@ -1,3 +1,6 @@
+"""
+Import required libraries for forms
+"""
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
@@ -5,6 +8,9 @@ from users.models import CustomUser, UserProfile
 
 
 class UserRegisterForm(UserCreationForm):
+    """Form for registering new users.
+    Extends Django's UserCreationForm and adds an email field
+    """
     email = forms.EmailField(
         label='Email',
         widget=forms.EmailInput(
@@ -25,11 +31,17 @@ class UserRegisterForm(UserCreationForm):
     )
 
     class Meta:
+        """
+        Class to specifying the model and its fields
+        """
         model = CustomUser
         fields = ('email', 'password1', 'password2')
 
 
 class UserLoginForm(AuthenticationForm):
+    """Form for logging in existing users.
+    Extends Django's AuthenticationForm and changes the username field to an email field
+    """
     username = forms.CharField(
         label='email',
         widget=forms.EmailInput(
@@ -45,7 +57,11 @@ class UserLoginForm(AuthenticationForm):
 
 
 class ProfileForm(forms.ModelForm):
+    """Form for editing user profiles"""
     class Meta:
+        """
+        Class to specifying the model and its fields
+        """
         model = UserProfile
         fields = ('first_name', 'second_name', 'country', 'city', 'street', 'phone')
         widgets = {
@@ -59,7 +75,11 @@ class ProfileForm(forms.ModelForm):
 
 
 class EmailForm(forms.ModelForm):
+    """Form for editing a user's email"""
     class Meta:
+        """
+        Class to specifying the model and its fields
+        """
         model = CustomUser
         fields = ('email',)
         widgets = {

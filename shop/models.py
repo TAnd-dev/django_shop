@@ -1,3 +1,6 @@
+"""
+Import required libraries for models
+"""
 from mptt.models import MPTTModel
 from mptt.fields import TreeForeignKey, TreeManyToManyField
 
@@ -10,6 +13,9 @@ from django_shop import settings
 
 
 class Category(MPTTModel):
+    """
+    Model to represent a category in a hierarchy with MPTT (Modified Preorder Tree Traversal)
+    """
     name = models.CharField(
         max_length=32,
         verbose_name='Name',
@@ -28,16 +34,25 @@ class Category(MPTTModel):
     )
 
     class MPTTMeta:
+        """
+        Metaclass to control the order of insertion of categories
+        """
         order_insertion_by = ['name']
 
     def __str__(self):
         return f'{self.name}'
 
     def get_absolute_url(self):
+        """
+        Return the URL to view a category
+        """
         return reverse('shop_category', kwargs={'slug': self.slug})
 
 
 class Item(models.Model):
+    """
+    Model to represent a product
+    """
     title = models.CharField(
         max_length=124,
         verbose_name='Title'
@@ -68,19 +83,31 @@ class Item(models.Model):
     )
 
     class Meta:
+        """
+        Metaclass to control the order of insertion of items
+        """
         ordering = ['created_at']
 
     def __str__(self):
         return f'{self.title}'
 
     def get_absolute_url(self):
+        """
+        Return the URL to view the item detail
+        """
         return reverse('item_detail', kwargs={'pk': self.pk})
 
     def get_avg_rate(self):
+        """
+        Return the average rate of all reviews for the item
+        """
         return Review.objects.filter(product=self).aggregate(Avg('rate'))['rate__avg']
 
 
 class ProductGallery(models.Model):
+    """
+    Model for Product Gallery images
+    """
     image = models.ImageField(
         upload_to='gallery_product',
         verbose_name='Image'
@@ -97,6 +124,9 @@ class ProductGallery(models.Model):
 
 
 class Review(models.Model):
+    """
+    Model for Review of items
+    """
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='review',
@@ -126,6 +156,9 @@ class Review(models.Model):
     )
 
     class Meta:
+        """
+        Metaclass to control the order of insertion of reviews
+        """
         ordering = ['created_at']
 
     def __str__(self):
@@ -133,6 +166,9 @@ class Review(models.Model):
 
 
 class Favorite(models.Model):
+    """
+    Model for storing user favorite items
+    """
     item = models.ForeignKey(
         Item,
         related_name='favorite',
@@ -151,6 +187,9 @@ class Favorite(models.Model):
 
 
 class Purchase(models.Model):
+    """
+    Model for storing user purchases
+    """
     item = models.ManyToManyField(
         Item,
         related_name='purchase',
@@ -203,6 +242,9 @@ class Purchase(models.Model):
     )
 
     class Meta:
+        """
+        Metaclass to control the order of insertion of purchases
+        """
         ordering = ('-created_at',)
 
     def __str__(self):
