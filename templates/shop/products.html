@@ -39,15 +39,49 @@
                             </div>
                             <div class="col-md-2 text-center">
                                 <h5 class="mt-3">{{ product.price }} Р</h5>
-                                <form method="post" action="{% url 'basket' %}" class="to_basket" data-product-id="{{ product.pk }}">
+                                <form method="post" action="{% url 'basket' %}" class="to_basket"
+                                      data-product-id="{{ product.pk }}">
                                     {% csrf_token %}
                                     <button class="btn btn-outline-primary"
-                                       style="min-width: 90px;">Купить</button>
+                                            style="min-width: 90px;">Купить
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
+                {% if page_obj.has_other_pages %}
+                    <nav class="mt-5" aria-label="Навигация">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{{ params }}"
+                                       aria-label="Предыдущая">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% for p in page_obj.paginator.page_range %}
+                                {% if page_obj.number == p %}
+                                    <li class="page-item active"><a class="page-link">{{ p }}</a></li>
+                                {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ p }}{{ params }}">{{ p }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{{ params }}"
+                                       aria-label="Следующая">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                {% endif %}
             </div>
         </div>
     </div>

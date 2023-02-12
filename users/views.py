@@ -74,7 +74,7 @@ class ChangeDataView(BaseUpdateView):
         return UserProfile.objects.get(user=self.request.user)
 
 
-class PurchaseView(ListView):
+class PurchaseView(LoginRequiredMixin, ListView):
     model = Purchase
     template_name = 'user/history_purchases.html'
     context_object_name = 'purchases'

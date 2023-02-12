@@ -14,7 +14,6 @@
         {% endfor %}
         <button class="btn btn-success">Зарегеитироваться</button>
         <a href="{% url 'signin' %}" class="btn btn-primary ms-3">Войти</a>
-        <a class="btn btn-outline-danger ms-3">Забыли пароль</a>
     </form>
     {% else %}
     <h4 class="text-center">Войти</h4>
@@ -30,7 +29,6 @@
         <input type="hidden" name="next" value="{{ request.GET.next }}">
         <button class="btn btn-success">Войти</button>
         <a href="{% url 'signup' %}" class="btn btn-primary ms-3">Регистрация</a>
-        <a class="btn btn-outline-danger ms-3">Забыли пароль</a>
     </form>
     {% endif %}
 </div>

@@ -50,6 +50,13 @@ class BaseShop(ListView, FormView):
 
         return items
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        params = self.request.GET.items()
+        params_str = ''.join([f'&{key}={value}' for key, value in params if key != 'page'])
+        context['params'] = params_str
+        return context
+
 
 class ProductsList(BaseShop):
     pass
