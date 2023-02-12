@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import CreateView, FormView, DetailView, UpdateView
+from django.views.generic import CreateView, FormView, DetailView, UpdateView, ListView
 
+from shop.models import Purchase
 from users.forms import UserLoginForm, UserRegisterForm, ProfileForm, EmailForm
 from users.models import UserProfile, CustomUser
 
@@ -71,6 +72,15 @@ class ChangeDataView(BaseUpdateView):
 
     def get_object(self, queryset=None):
         return UserProfile.objects.get(user=self.request.user)
+
+
+class PurchaseView(ListView):
+    model = Purchase
+    template_name = 'user/history_purchases.html'
+    context_object_name = 'purchases'
+
+    def get_queryset(self):
+        return Purchase.objects.filter(user=self.request.user.pk).all()
 
 
 @login_required

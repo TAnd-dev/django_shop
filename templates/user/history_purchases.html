@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        {% for purchase in purchases %}
+            {% if forloop.first %}
+                <div class="row">
+                    <div class="col-4 h4 text-center">Товары</div>
+                    <div class="col-4 h4">Информация</div>
+                    <div class="col-2 h4">Общая цена</div>
+                    <div class="col-2 h4">Дата</div>
+                </div>
+            {% endif %}
+            <div class="row mt-3">
+                <div class="col-4">
+                    {% for item in purchase.item.all %}
+                        <p class="h6 my-3">
+                            <a href="{{ item.get_absolute_url }}">{{ item }}</a>
+                        </p>
+                    {% endfor %}
+                </div>
+                <div class="col-4">
+                    <p class="h6 my-3">
+                        Email: {{ purchase.email }}
+                    </p>
+                    {% if purchase.phone %}
+                        <p class="h6 my-3">
+                            Телефон: {{ purchase.phone }}
+                        </p>
+                    {% endif %}
+                    {% if purchase.country %}
+                        <p class="h6 my-3">
+                            Страна: {{ purchase.country }}
+                        </p>
+                    {% endif %}
+                    {% if purchase.city %}
+                        <p class="h6 my-3">
+                            Город: {{ purchase.city }}
+                        </p>
+                    {% endif %}
+                    {% if purchase.street %}
+                        <p class="h6 my-3">
+                            Улица: {{ purchase.street }}
+                        </p>
+                    {% endif %}
+                </div>
+                <div class="col-2">
+                    <p class="h5">{{ purchase.total_price }} Р</p>
+                </div>
+                <div class="col-2">
+                     <p class="h5">{{ purchase.created_at|date:"Y-m-d" }}</p>
+                </div>
+            </div>
+            <hr/>
+
+        {% empty %}
+            <p class="h5">Тут ничего нет(</p>
+        {% endfor %}
+    </div>
+{% endblock %}

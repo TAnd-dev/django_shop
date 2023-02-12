@@ -103,7 +103,7 @@ class UserBasket(CreateView, ListView):
         purchase.item.add(*products)
 
         messages.success(self.request, 'Ваш заказ успешно оформлен!')
-        self.request.session.clear()
+        self.request.session['basket'] = []
         return super().form_valid(form)
 
 
