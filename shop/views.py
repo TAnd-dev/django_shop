@@ -42,7 +42,8 @@ class BaseShop(ListView, FormView):
             items = items.order_by('price').all()
         elif sort['sort'] == '2':
             items = items.order_by('-price').all()
-        # elif sort['sort'] == '3':
+        elif sort['sort'] == '3':
+            items = items.annotate(count_purchases=Count('purchase')).order_by('-count_purchases').all()
         elif sort['sort'] == '4':
             items = items.annotate(count_review=Count('review')).order_by('-count_review').all()
         elif sort['sort'] == '5':
