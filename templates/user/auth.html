@@ -1,35 +1,50 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
 {% block content %}
-<div class="container mt-5">
-    {% if 'signup' in request.path %}
-    <h4 class="text-center">Регистрация</h4>
-    <form method="post" class="form-control w-50 mx-auto py-3">
-        {% csrf_token %}
-        {% for field in form %}
-        <span class="h6 ps-2">{{ field.label }}</span>
-        <div class="mt-2 mb-3">
-            {{ field }}
-        </div>
-        <div class="text-danger">{{ field.errors }}</div>
-        {% endfor %}
-        <button class="btn btn-success">Зарегеитироваться</button>
-        <a href="{% url 'signin' %}" class="btn btn-primary ms-3">Войти</a>
-    </form>
-    {% else %}
-    <h4 class="text-center">Войти</h4>
-    <form method="post" class="form-control w-50 mx-auto py-3">
-        {% csrf_token %}
-        {% for field in form %}
-        <span class="h6 ps-2">{{ field.label }}</span>
-        <div class="mt-2 mb-3">
-            {{ field }}
-        </div>
-        <div class="text-danger">{{ field.errors }}</div>
-        {% endfor %}
-        <input type="hidden" name="next" value="{{ request.GET.next }}">
-        <button class="btn btn-success">Войти</button>
-        <a href="{% url 'signup' %}" class="btn btn-primary ms-3">Регистрация</a>
-    </form>
-    {% endif %}
-</div>
+    <div class="container mt-5">
+        {% if 'signup' in request.path %}
+            <h4 class="text-center">Регистрация</h4>
+            <form method="post" class="form-control w-50 mx-auto py-3">
+                {% csrf_token %}
+                {% for field in form %}
+                    <span class="h6 ps-2">{{ field.label }}</span>
+                    <div class="mt-2 mb-3">
+                        {{ field }}
+                    </div>
+                    <div class="text-danger">{{ field.errors }}</div>
+                {% endfor %}
+{{accounts.google}}
+                <p><a href="{% provider_login_url "google" %}">Войти с помощью Google</a></p>
+
+                <button class="btn btn-success">Зарегеитироваться</button>
+                <a href="{% url 'signin' %}" class="btn btn-primary ms-3">Войти</a>
+            </form>
+        {% else %}
+            <h4 class="text-center">Войти</h4>
+            <form method="post" class="form-control w-50 mx-auto py-3">
+                {% csrf_token %}
+                {% for field in form %}
+                    <span class="h6 ps-2">{{ field.label }}</span>
+                    <div class="mt-2 mb-3">
+                        {{ field }}
+                    </div>
+                    <div class="text-danger">{{ field.errors }}</div>
+                {% endfor %}
+
+                <p><a href="{% provider_login_url "google" %}">Войти с помощью Google</a></p>
+
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                <button class="btn btn-success">Войти</button>
+                <a href="{% url 'signup' %}" class="btn btn-primary ms-3">Регистрация</a>
+            </form>
+        {% endif %}
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('li').each(function (index, element) {
+                $(element).attr('class', 'list-group-item')
+            })
+        })
+    </script>
 {% endblock %}
