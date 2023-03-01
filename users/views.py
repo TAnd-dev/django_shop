@@ -11,7 +11,7 @@ from django.views.generic import CreateView, FormView, DetailView, UpdateView, L
 
 from shop.models import Purchase
 from users.forms import UserLoginForm, UserRegisterForm, ProfileForm, EmailForm
-from users.models import UserProfile, CustomUser
+from users.serices import get_user_profile, get_user, get_user_purchases
 
 
 class BaseUpdateView(LoginRequiredMixin, UpdateView):
@@ -74,7 +74,7 @@ class ProfileView(LoginRequiredMixin, DetailView):
     context_object_name = 'profile'
 
     def get_object(self, queryset=None):
-        return UserProfile.objects.get(user=self.request.user)
+        return get_user_profile(self.request.user.pk)
 
 
 class ChangeEmailView(BaseUpdateView):
@@ -84,7 +84,7 @@ class ChangeEmailView(BaseUpdateView):
     form_class = EmailForm
 
     def get_object(self, queryset=None):
-        return CustomUser.objects.get(pk=self.request.user.id)
+        return get_user(self.request.user.id)
 
 
 class ChangeDataView(BaseUpdateView):
@@ -94,7 +94,7 @@ class ChangeDataView(BaseUpdateView):
     form_class = ProfileForm
 
     def get_object(self, queryset=None):
-        return UserProfile.objects.get(user=self.request.user)
+        return get_user_profile(self.request.user.pk)
 
 
 class PurchaseView(LoginRequiredMixin, ListView):
@@ -106,7 +106,7 @@ class PurchaseView(LoginRequiredMixin, ListView):
     context_object_name = 'purchases'
 
     def get_queryset(self):
-        return Purchase.objects.filter(user=self.request.user.pk).all()
+        return get_user_purchases(self.request.user.pk)
 
 
 @login_required

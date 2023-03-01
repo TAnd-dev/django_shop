@@ -1,7 +1,5 @@
-from dataclasses import dataclass
-
 from django.db.models import QuerySet
-from django.db.models import Count, Avg, Sum
+from django.db.models import Count, Avg
 
 from shop.models import Item
 
